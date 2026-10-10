@@ -1,0 +1,48 @@
+name: Deploy reviewed STATIC_A static site
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout approved static repository
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Verify reviewed artifact allowlist and checksums
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -z "$(find site -type l -print)"
+          test -z "$(find site -type f -links +1 -print)"
+          diff -u <(printf '%s\n' '.nojekyll' 'SHA256SUMS' 'assets/dashboard-data.json' 'assets/dashboard.css' 'assets/dashboard.js' 'index.html' 'public-manifest.json' | sort) <(find site -type f -printf '%P\n' | sort)
+          (cd site && sha256sum --check SHA256SUMS)
+      - name: Upload only the static site directory
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+  deploy:
+    needs: package
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Deploy the reviewed artifact
+        id: deployment
+        uses: actions/deploy-pages@v4

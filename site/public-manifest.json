@@ -1,0 +1,28 @@
+{
+  "publication_version": "STATIC_A_WEB_P1_20261010_V1",
+  "snapshot_asof": "2026-10-09",
+  "record_count": 5538,
+  "dates": 1846,
+  "date_min": "2019-01-02",
+  "date_max": "2026-10-08",
+  "outcome_counts": {
+    "HIT": 3153,
+    "MISS": 2162,
+    "UNKNOWN": 179,
+    "PENDING": 44
+  },
+  "provenance_counts": {
+    "RETROSPECTIVE_HISTORICAL_ECONOMIC_ROBUSTNESS_AUDIT": 4983,
+    "LOCKED_REPLAY": 474,
+    "RETROSPECTIVE_RECONSTRUCTION": 81,
+    "LIVE_PRODUCTION": 0
+  },
+  "data_sha256": "aded30c462e641706d738472e394d0040cd1ec1ed4754f5b9bb60093115dc764",
+  "automatic_updates": false,
+  "model_scoring": false,
+  "repository_name": "static-a-dashboard",
+  "certified_live_production_rows": 0,
+  "phase5r_rows": 21,
+  "scores_are_calibrated_probabilities": false,
+  "data_projection_version": "STATIC_A_PAGES_PREP_20261010_V1"
+}

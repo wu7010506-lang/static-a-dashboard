@@ -1,0 +1,15 @@
+# Public repository contains only the reviewed static package.
+*.db
+*.sqlite*
+*.parquet
+*.csv
+*.py
+*.pyc
+*.pem
+*.key
+*.env
+.env*
+node_modules/
+private-review-evidence/
+tools/
+__pycache__/
