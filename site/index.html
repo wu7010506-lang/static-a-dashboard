@@ -1,22 +1,30 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'none'"><title>STATIC_A Top3 · 保存選股與回溯結果</title><link rel="icon" href="data:,"><link rel="stylesheet" href="./assets/dashboard.css"><script defer src="./assets/dashboard.js"></script></head><body><div id="static-a-preview">
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'none'"><title>STATIC_A Top3 · 保存選股與回溯結果</title><link rel="icon" href="data:,"><link rel="stylesheet" href="./assets/dashboard.css?v=20261010-p3"><script defer src="./assets/dashboard.js?v=20261010-p3"></script></head><body><div id="static-a-preview">
  <div class="sa-app" id="sa-saved-app" aria-label="STATIC_A 訊號與結果">
   <header class="sa-head"><div><span class="sa-wordmark">STATIC_A <span>Top3</span></span><p>20 交易日 Touch +15% 選股系統</p></div><div class="sa-date">保存資料截至 <span id="sa-asof"></span><span class="sa-demo">靜態公開副本 · 不自動更新</span></div></header>
-  <main><section id="sa-public-notice" class="sa-availability" aria-label="公開資料說明"><strong>歷史保存結果 · 0 筆已認證 LIVE_PRODUCTION</strong><p>分數僅供模型排序，並非校準後的命中機率。歷史研究結果不保證未來報酬。</p><p>LOCKED_REPLAY 與 RETROSPECTIVE_RECONSTRUCTION 保留原分類，不視為 Live。Phase5R 新增 21 筆為事後重建；官方調整價結果尚未驗證，保留 Pending / Unknown。</p></section><section id="sa-phase5r-dates" class="sa-availability"><strong>Phase5R · 七個目標日</strong><p>事後重建紀錄不計入 certified Live 績效。官方調整價續接未驗證；新結果保留 Pending / Unknown。</p><div class="sa-table-wrap"><table><thead><tr><th>Formation date</th><th>重建狀態</th><th>新增列</th><th>有效候選</th><th>未解決</th><th>Blocker</th></tr></thead><tbody><tr><td>2026-09-30</td><td>RECONSTRUCTED</td><td>3</td><td>1971</td><td>0</td><td>—</td></tr><tr><td>2026-10-01</td><td>RECONSTRUCTED</td><td>3</td><td>1970</td><td>0</td><td>—</td></tr><tr><td>2026-10-02</td><td>RECONSTRUCTED</td><td>3</td><td>1970</td><td>0</td><td>—</td></tr><tr><td>2026-10-05</td><td>RECONSTRUCTED</td><td>3</td><td>1970</td><td>0</td><td>—</td></tr><tr><td>2026-10-06</td><td>RECONSTRUCTED</td><td>3</td><td>1970</td><td>0</td><td>—</td></tr><tr><td>2026-10-07</td><td>RECONSTRUCTED</td><td>3</td><td>1970</td><td>0</td><td>—</td></tr><tr><td>2026-10-08</td><td>RECONSTRUCTED</td><td>3</td><td>1938</td><td>0</td><td>—</td></tr></tbody></table></div><p>既有5517筆完全保留；新增21筆；合計5538筆。此公開副本只展示保存結果，不宣稱歷史日即時發出。</p></section>
+  <main>
    <div class="sa-section-title"><h2 id="sa-top-title">最新 STATIC_A Top3</h2><div class="sa-tools"><label for="sa-top-provenance">來源</label><select id="sa-top-provenance"></select><label for="sa-formation">Formation date</label><input id="sa-formation" type="date"><button type="button" id="sa-latest">最新訊號</button><button type="button" id="sa-today">快照日期</button></div></div>
    <p id="sa-availability" class="sa-availability" aria-live="polite"></p>
-   <p id="sa-reconciliation" class="sa-availability" aria-live="polite">OUTCOME_RECONCILIATION_PENDING</p>
-   <div class="sa-picks" id="sa-top3"></div>
+<div class="sa-picks" id="sa-top3"></div>
    <section class="sa-detail" id="sa-detail" aria-live="polite">點選股票查看訊號與結果</section>
    <div class="sa-section-title"><h2>歷史紀錄</h2><div class="sa-tools"><label for="sa-history-year">年份</label><select id="sa-history-year"></select><label for="sa-search">搜尋</label><input id="sa-search" type="search" placeholder="代碼、名稱、日期、ID" autocomplete="off"><label for="sa-history-rank">Rank</label><select id="sa-history-rank"><option value="ALL">全部</option><option value="1">#1</option><option value="2">#2</option><option value="3">#3</option></select><label for="sa-history-outcome">Touch15</label><select id="sa-history-outcome"><option value="ALL">全部</option><option value="HIT">Hit</option><option value="MISS">Miss</option><option value="UNKNOWN">Unknown</option><option value="PENDING">Pending</option></select><label for="sa-history-provenance">Provenance</label><select id="sa-history-provenance"></select></div></div>
+   <details id="sa-glossary" class="sa-glossary">
+    <summary>名詞解釋：Touch15、20D Return、Max 20D、Status</summary>
+    <div class="sa-glossary-body">
+     <p>共同基準：選股日後第一個官方交易日的<strong>調整開盤價</strong>。觀察範圍是其後第 1～20 個官方交易日，不是 20 個日曆天。</p>
+     <dl>
+      <div><dt>Touch15</dt><dd>觀察期間的調整最高價是否曾達到基準價的 <strong>+15%</strong>。<br><strong>HIT</strong>：曾觸及；<strong>MISS</strong>：完整觀察後未觸及；<strong>PENDING</strong>：尚未觀察完；<strong>UNKNOWN</strong>：必要資料不足，無法判定。</dd></div>
+      <div><dt>20D Return</dt><dd>持有至第 20 個交易日調整收盤的報酬。<br><span class="sa-formula">第 20 日調整收盤價 ÷ 基準價 − 1</span></dd></div>
+      <div><dt>Max 20D</dt><dd>20 日期間內曾出現的最高漲幅。<br><span class="sa-formula">期間調整最高價 ÷ 基準價 − 1</span><br>這是路徑上的最高值，並非實際賣出報酬。</dd></div>
+      <div><dt>Status</dt><dd>整筆結果的資料狀態。<br><strong>MATURE</strong>：20 日已結束且必要行情完整；<strong>PENDING</strong>：觀察期未結束；<strong>UNKNOWN</strong>：資料不足，無法完整確認結果。</dd></div>
+     </dl>
+     <p>Touch15 可在期間結束前確認 HIT，因此 HIT 與 Status PENDING 可以同時出現。報酬未扣交易成本；缺少必要行情時保留 Pending／Unknown，不填推測值。</p>
+     <p class="sa-glossary-example"><strong>計算示例（非股票紀錄）：</strong>基準價 100 元，期間最高 118 元，第 20 日收盤 95 元 → Touch15 HIT、20D Return −5%、Max 20D +18%；行情完整時 Status 為 MATURE。命中 +15% 後，持有至第 20 日仍可能虧損。</p>
+     <p class="sa-footnote">21 筆 Phase5R 為事後重建，保留 RETROSPECTIVE_RECONSTRUCTION；官方調整行情結果尚未驗證，仍保留 Pending／Unknown。保存的 replay／回溯結果不視為 Live。</p>
+    </div>
+   </details>
    <div class="sa-table-wrap"><table><thead><tr><th>Date</th><th>Rank</th><th>Ticker</th><th>Name</th><th>Score</th><th>Provenance</th><th>Touch15</th><th>20D Return</th><th>Max 20D</th><th>Status</th></tr></thead><tbody id="sa-history"></tbody></table></div>
    <div class="sa-pagination"><span id="sa-page-info" aria-live="polite"></span><div class="sa-tools"><button type="button" id="sa-prev">上一頁</button><button type="button" id="sa-next">下一頁</button></div></div>
-   <p class="sa-footnote">20D 報酬以正式 t+20 調整收盤相對 t+1 調整開盤計算，未扣費用。Touch15 命中後仍可能收低。Max / Min 是期間路徑診斷。</p>
-   <div class="sa-section-title"><h2>Dashboard current-definition outcomes</h2><div class="sa-tools"><label for="sa-stats-era">Provenance</label><select id="sa-stats-era"></select><label for="sa-stats-year">年份</label><select id="sa-stats-year"></select><label for="sa-stats-rank">Rank</label><select id="sa-stats-rank"><option value="全部">全部</option><option value="1">#1</option><option value="2">#2</option><option value="3">#3</option></select></div></div>
-   <p id="sa-population" class="sa-footnote"></p>
-   <div class="sa-stats"><div><span>Touch15 Lower</span><strong id="sa-lower">—</strong><small id="sa-denominator"></small></div><div class="sa-counts"><span>Hit <strong id="sa-hits">—</strong></span><span>Miss <strong id="sa-misses">—</strong></span><span>Unknown <strong id="sa-unknowns">—</strong></span><span>Pending <strong id="sa-pending">—</strong></span><small id="sa-total"></small></div></div>
-   <div class="sa-stat-grid" id="sa-extra-stats"></div>
-   <p class="sa-footnote">Lower / Upper 的固定分母包含全部成熟槽位與 Unknown；Pending 不提前列為 Miss。報酬統計僅使用合法精確端點，另列有效樣本數。</p>
-   <details class="sa-provenance"><summary>資料來源、定義與更新狀態</summary><p id="sa-source-summary"></p><p id="sa-live-summary"></p><p>Production 是保存來源篩選，並不表示每筆於當時即時產生。LIVE_DAILY_GENERATED 的保存 claim 與實際 UTC 封存時間分開顯示；事後產生歸為 RETROSPECTIVE_RECONSTRUCTION。研究檔保留原研究分類。</p><p>Entry 僅讀 exact official t+1 adjusted open，缺失不向後尋找。Touch15 只觀察 t+1…t+20 adjusted high。固定 20D 報酬、Max / Min 由独立 cache 保存，頁面刷新不重算 finalized 值。股票名稱僅為來源顯示對照。</p><p id="sa-static-state">本頁僅讀隨站公開的保存資料；無後端、無自動更新、無模型評分。</p></details>
+   <p class="sa-footnote sa-public-footnote">靜態歷史資料，不自動更新。0 筆已認證 Live；分數是排序分數，非校準機率。歷史研究結果不保證未來報酬。</p>
   </main>
  </div>
 </div>

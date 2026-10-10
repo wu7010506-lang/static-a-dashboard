@@ -9,7 +9,7 @@
  const esc=v=>String(v??'UNKNOWN').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const pct=v=>v==null?'UNKNOWN':(v>=0?'+':'')+(v*100).toFixed(2)+'%';
  const num=v=>v==null?'UNKNOWN':Number(v).toLocaleString('en',{maximumFractionDigits:6});
- const state={formation:meta.latest_reconstruction_date||meta.latest_signal_date||meta.asof,top:'PHASE5R_NEW',year:'2026',history:'ALL',stats:'PHASE5R_NEW',statsYear:'全部',rank:'全部',page:0,detail:null,query:'',historyRank:'ALL',historyOutcome:'ALL'};
+ const state={formation:meta.latest_reconstruction_date||meta.latest_signal_date||meta.asof,top:'PHASE5R_NEW',year:'2026',history:'ALL',page:0,detail:null,query:'',historyRank:'ALL',historyOutcome:'ALL'};
  const pc=()=>[...new Set(records.map(r=>r.provenance_class))].sort();
  const opts=()=>[['PHASE5R_NEW','Phase5R 回溯重建'],['LIVE_PRODUCTION','已認證 Live（独立）'],['ALL','全部（混合來源）'],['PRODUCTION','Production 保存（含事後產生）'],['CERTIFIED_HISTORICAL_SIGNAL','Certified historical signal'],['RESEARCH','Replay / research'],...pc().map(p=>[p,p])];
  const matches=(r,p)=>p==='ALL'||(p==='PHASE5R_NEW'?r.origin==='PHASE5R_RECONSTRUCTION':p==='PRODUCTION'?r.origin==='PRODUCTION':p==='RESEARCH'?r.origin==='RESEARCH':r.provenance_class===p);
@@ -40,20 +40,6 @@
   byId('sa-page-info').textContent=rs.length?(start+1)+'–'+Math.min(start+size,rs.length)+' / '+rs.length+' 筆':'無此來源保存紀錄';
   byId('sa-prev').disabled=state.page===0;byId('sa-next').disabled=start+size>=rs.length;
  }
- function stats(rs){
-  const mature=rs.filter(r=>r.maturity_status==='MATURE'),count=(a,s)=>a.filter(r=>r.touch15===s).length,h=count(mature,'HIT'),m=count(mature,'MISS'),u=mature.length-h-m;
-  const vals=rs.map(r=>r.final_return_20d).filter(v=>v!=null&&Number.isFinite(v)).sort((a,b)=>a-b);
-  const q=p=>{if(!vals.length)return null;const x=(vals.length-1)*p,i=Math.floor(x);return vals[i]+(vals[Math.min(i+1,vals.length-1)]-vals[i])*(x-i);};
-  return {N:rs.length,Hit:count(rs,'HIT'),Miss:count(rs,'MISS'),Unknown:count(rs,'UNKNOWN'),Pending:count(rs,'PENDING'),mature:mature.length,h,u,lower:mature.length?h/mature.length:null,upper:mature.length?(h+u)/mature.length:null,resolved:h+m?h/(h+m):null,valid:vals.length,avg:vals.length?vals.reduce((a,b)=>a+b,0)/vals.length:null,median:q(.5),p25:q(.25),p75:q(.75)};
- }
- function renderStats(){
-  const rs=records.filter(r=>matches(r,state.stats)&&(state.statsYear==='全部'||r.formation_date.startsWith(state.statsYear))&&(state.rank==='全部'||r.rank===Number(state.rank))),s=stats(rs);
-  byId('sa-population').textContent='Population: '+opts().find(o=>o[0]===state.stats)?.[1]+' · '+state.statsYear+' · Rank '+state.rank+' · classes: '+([...new Set(rs.map(r=>r.provenance_class))].join(', ')||'無資料');
-  byId('sa-lower').textContent=s.lower==null?'—':(s.lower*100).toFixed(1)+'%';byId('sa-denominator').textContent=s.h+' / '+s.mature+' 全部成熟槽位';
-  for(const [id,key] of [['sa-hits','Hit'],['sa-misses','Miss'],['sa-unknowns','Unknown'],['sa-pending','Pending']])byId(id).textContent=s[key].toLocaleString();
-  byId('sa-total').textContent='N '+s.N+' · horizon Pending '+(s.N-s.mature)+' · mature Unknown '+s.u;
-  byId('sa-extra-stats').innerHTML=[['Touch15 Upper',s.upper],['Resolved precision',s.resolved],['Average Final Return 20D',s.avg],['Median Final Return 20D',s.median],['P25',s.p25],['P75',s.p75]].map(([k,v])=>field(k,k==='Touch15 Upper'||k==='Resolved precision'?(v==null?'UNKNOWN':(v*100).toFixed(2)+'%'):pct(v))).join('')+field('合法 Final Return 樣本數',s.valid);
- }
  function drawChart(r){
   const host=byId('sa-price-chart');if(!host)return;
   const w=Math.max(260,host.clientWidth),h=240,left=64,right=14,top=16,bottom=42;
@@ -80,25 +66,16 @@
  function render(){
   root.dataset.cacheCalculatedAt=meta.calculated_at;
   const optionHTML=opts().map(([v,n])=>'<option value="'+esc(v)+'">'+esc(n)+'</option>').join('');
-  for(const [id,key] of [['sa-top-provenance','top'],['sa-history-provenance','history'],['sa-stats-era','stats']]){byId(id).innerHTML=optionHTML;byId(id).value=state[key];}
+  for(const [id,key] of [['sa-top-provenance','top'],['sa-history-provenance','history']]){byId(id).innerHTML=optionHTML;byId(id).value=state[key];}
   const currentYears=[...new Set(records.map(r=>r.formation_date.slice(0,4)))].sort().reverse();
-  for(const [id,key] of [['sa-history-year','year'],['sa-stats-year','statsYear']]){byId(id).innerHTML=['全部',...currentYears].map(y=>'<option value="'+y+'">'+y+'</option>').join('');byId(id).value=state[key];}
+  for(const [id,key] of [['sa-history-year','year']]){byId(id).innerHTML=['全部',...currentYears].map(y=>'<option value="'+y+'">'+y+'</option>').join('');byId(id).value=state[key];}
   byId('sa-asof').textContent=meta.asof;
-  byId('sa-reconciliation').textContent=(meta.outcome_authority_status||'OUTCOME_RECONCILIATION_PENDING')+' · '+(meta.outcome_reconciliation?.classified||0)+'/35 已分類 · 舊標籤保留 · 靜態快照，不自動更新';
-  byId('sa-source-summary').textContent=records.length.toLocaleString()+' 筆保存訊號 · '+meta.authoritative_source+' · 行情截至 '+meta.price_data_through+' · '+meta.calculation_version;
-  byId('sa-live-summary').textContent=meta.certified_live_production_rows+' 筆已認證同日 LIVE_PRODUCTION · 保存的回溯/replay 結果不算 Live 績效';
-  renderTop();renderHistory();renderStats();if(state.detail)showDetail(state.detail);
+  renderTop();renderHistory();if(state.detail)showDetail(state.detail);
  }
- const options=opts().map(([v,n])=>'<option value="'+esc(v)+'">'+esc(n)+'</option>').join('');
- for(const id of ['sa-top-provenance','sa-history-provenance','sa-stats-era'])byId(id).innerHTML=options;
- const years=[...new Set(records.map(r=>r.formation_date.slice(0,4)))].sort().reverse();
- for(const id of ['sa-history-year','sa-stats-year'])byId(id).innerHTML=['全部',...years].map(y=>'<option value="'+y+'">'+y+'</option>').join('');
- byId('sa-history-year').value=state.year;byId('sa-history-provenance').value=state.history;byId('sa-stats-era').value=state.stats;byId('sa-stats-year').value=state.statsYear;
  byId('sa-formation').onchange=e=>{state.formation=e.target.value;renderTop();};
  byId('sa-top-provenance').onchange=e=>{state.top=e.target.value;state.formation=latest(state.top)||meta.asof;renderTop();};
  byId('sa-latest').onclick=()=>{state.formation=latest(state.top)||meta.asof;renderTop();};byId('sa-today').onclick=()=>{state.formation=meta.asof;renderTop();};
  byId('sa-history-year').onchange=e=>{state.year=e.target.value;state.page=0;renderHistory();};byId('sa-history-provenance').onchange=e=>{state.history=e.target.value;state.page=0;renderHistory();};
- for(const [id,k] of [['sa-stats-era','stats'],['sa-stats-year','statsYear'],['sa-stats-rank','rank']])byId(id).onchange=e=>{state[k]=e.target.value;renderStats();};
  byId('sa-search').oninput=e=>{state.query=e.target.value;state.page=0;renderHistory();};
  byId('sa-history-rank').onchange=e=>{state.historyRank=e.target.value;state.page=0;renderHistory();};
  byId('sa-history-outcome').onchange=e=>{state.historyOutcome=e.target.value;state.page=0;renderHistory();};

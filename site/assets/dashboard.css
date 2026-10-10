@@ -74,3 +74,17 @@ html{color-scheme:light dark}body{margin:0;background:light-dark(#f0f3f5,#0f1317
 @media(max-width:480px){#static-a-preview .sa-pick .sa-badge,#static-a-preview .sa-pick .sa-result{grid-column:1 / -1;max-width:100%;text-align:left}#static-a-preview .sa-pick .sa-stock{overflow-wrap:anywhere}}
 
 #sa-search{width:180px}#static-a-preview .sa-tools label{white-space:nowrap}
+
+#static-a-preview .sa-glossary{margin:0 0 18px;border:1px solid var(--sa-line);border-radius:10px;background:var(--sa-bg)}
+#static-a-preview .sa-glossary>summary{padding:14px 16px;cursor:pointer;font-weight:600;color:var(--sa-fg);line-height:1.5}
+#static-a-preview .sa-glossary>summary:focus-visible{outline:2px solid var(--sa-accent);outline-offset:3px}
+#static-a-preview .sa-glossary-body{padding:0 16px 16px;line-height:1.8;overflow-wrap:anywhere}
+#static-a-preview .sa-glossary-body p{margin:10px 0}
+#static-a-preview .sa-glossary-body dl{margin:12px 0}
+#static-a-preview .sa-glossary-body dl>div{display:grid;grid-template-columns:135px minmax(0,1fr);gap:12px;padding:12px 0;border-top:1px solid var(--sa-line)}
+#static-a-preview .sa-glossary-body dt{font-weight:600}
+#static-a-preview .sa-glossary-body dd{margin:0}
+#static-a-preview .sa-formula{color:var(--sa-accent)}
+#static-a-preview .sa-glossary-example{padding:12px;background:var(--sa-soft);border-radius:8px}
+#static-a-preview .sa-public-footnote{margin-top:18px}
+@media(max-width:600px){#static-a-preview .sa-glossary-body dl>div{grid-template-columns:1fr;gap:4px}}

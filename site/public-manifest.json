@@ -1,5 +1,5 @@
 {
-  "publication_version": "STATIC_A_WEB_P1_20261010_V1",
+  "publication_version": "STATIC_A_WEB_P3_UI_CLEANUP_20261010_V1",
   "snapshot_asof": "2026-10-09",
   "record_count": 5538,
   "dates": 1846,
@@ -24,5 +24,6 @@
   "certified_live_production_rows": 0,
   "phase5r_rows": 21,
   "scores_are_calibrated_probabilities": false,
-  "data_projection_version": "STATIC_A_PAGES_PREP_20261010_V1"
+  "data_projection_version": "STATIC_A_PAGES_PREP_20261010_V1",
+  "dashboard_ui_version": "20261010-p3"
 }
